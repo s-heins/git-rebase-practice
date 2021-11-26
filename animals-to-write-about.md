@@ -1,4 +1,5 @@
 alligator
+asian black bear
 brown bear
 chimpanzee
 crocodile
