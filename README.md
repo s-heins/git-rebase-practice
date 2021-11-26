@@ -65,3 +65,105 @@ Here is the same with some highlighting from the command line:
   ![Changes introduced per commit in ENC-004](changes-introduced-per-commit-in-enc004.png)
 * **Exercise 4** Changes introduced per commit in `ENC-002`:
   ![Changes introduced per commit in ENC-002](changes-introduced-in-each-commit-in-enc002.png)
+
+## Exercise 5 solution
+
+Different strategies:
+
+1. Squashing all commits into one ball
+2. Retaining as many commits as possible while keeping merge conflicts at a minimum
+
+If you want to try different strategies, you can do the rebase and then run `git reset --hard origin/ENC-002_Add-bears` to reset your branch and start anew.
+
+### Squashing all commits into one
+
+#### Alternative 1 – rebasing on main directly
+
+* run `git rebase -i origin/main`
+* a window will open in your chosen or default command line editor. Change all `pick` entries to squash (s) for all commits, then save and exit the file
+* for any merge conflicts, resolve them as before and then run `git add . && git rebase --continue`
+
+#### Stats for Alt 1 (squashing)
+
+* Number of conflicts: **3**
+  * commit 1
+  * squashing commit 2 into commit 1\
+  (asian black bear + bengal tiger vs black bear)
+  * squashing commit 3 into new commit (1 + 2)\
+  (asian black bear + bengal tiger vs removing black bear)
+* Number of times editing the commit message: **5** (one for each commit)
+* Number of resulting commits: **1**
+
+#### Alternative 2 – first squashing all commits, then rebasing
+
+* run `git rebase -i 11d67e9` to change your current branch
+* as above, change all `pick` entries to `s` (squash)
+* afterwards, run `git rebase -i origin/master`
+
+#### Stats for Alt 2 (squashing)
+
+* Number of conflicts during squash: **0**
+* Number of times editing the commit message: **1**
+* Number of conflicts during rebase: **1**
+* Number of resulting commits: **1**
+
+👉 It is more convenient to *first* clean up the branch and *then* rebase (1 conflict vs 3 conflicts)
+
+### Retaining as many commits as possible
+
+For example, you could choose this strategy:
+
+![](rebasing-e002-interactively.png)
+
+We pick the first commit, drop the second, squash the fourth into the first, and move the third after it. We choose edit for that one so we can make sure that removing the brown bear is no longer in the list of changes and then we can reword the commit message to read "Add north american black bear". We can also retain commit #5.
+
+Here is an illustration of our changes:
+
+![](rebase-strategy-illustrated.png)
+
+Then, our changes will look like this:
+
+![](rebase-strategy-illustrated-finished.png)
+
+#### Alternative 1 – rebasing on main
+
+* run `git rebase -i origin/main`
+* use the above rebasing strategy (pick, d, s, e, pick and move commit `a850a5f` after `c448f74`)
+
+#### Stats for alt 1 (retaining as many commits as possible)
+
+* Number of conflicts: **3**
+  * 1/5: commit 1\
+  (asian black bear + bengal tiger vs brown bear; pangolin vs polar bear)
+  * 3/5: squashing commit 4 into commit 1\
+  (bengal tiger vs empty line where black bear was removed; add asian black bear)
+  * 4/5: editing commit 3 into new commit to just add north american brown bear\
+  (asian black bear + bengal tiger vs removing black bear)
+* Number of times editing the commit message: **3** (one for each conflict)
+* Number of resulting commits: **3**
+
+#### Alternative 2 – squash, then rebase
+
+* run `git rebase -i 11d67e9` to change your current branch
+* change all `pick` entries to `s`
+* afterwards, run `git rebase -i origin/master`
+* use the above rebasing strategy (pick, s, s, e, pick and move commit `a850a5f` after `c448f74`)
+
+#### Stats for alt 2 (retaining as many commits as possible)
+
+* Number of conflicts during squash: **1**\
+(4/5: asian black bear vs removing black bear)
+* Number of times editing the commit message: **2** (1/5 & 4/5)
+* Number of conflicts during rebase: **1**\
+(1/3: bengal tiger vs brown bear; pangolin vs polar bear)
+* Number of resulting commits: **3**
+
+👉 It is more convenient to *first* clean up the branch and *then* rebase (2 conflicts vs 3 conflicts)
+
+## Conclusion
+
+* It is best to keep your commit history clean while working on the branch because it is a lot more work to clean it up afterwards
+  * while working, try to separate your work into distinct steps after each of which the tests will still run
+  * if you add more work, think about whether something should be a separate commit. If you forgot to run linting or are just fixing some tests, this should go in the same commit as before
+  * amend your previous commit by running `git add . && git commit --amend` (if you don't want to change the commit message, use `--no-edit` as well)
+* Commits only serve a purpose if they help the person viewing them understand what happened in a line of work. If you're going over the same piece of code multiple times, to first change it to work one way and then another within the same branch, think about whether retaining those commits will help the reader. More often than not, the answer is no. If so, squash those commits to keep the noise at a minimum.
