@@ -7,3 +7,4 @@ giraffe
 gorilla
 house cat
 tiger
+wasp
