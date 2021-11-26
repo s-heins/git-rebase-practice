@@ -1,5 +1,7 @@
+amur tiger
 alligator
 asian black bear
+bengal tiger
 chimpanzee
 crocodile
 elephant
