@@ -11,4 +11,6 @@ house cat
 north american black bear
 panda bear
 polar bear
+sloth bear
+sun bear
 tiger
