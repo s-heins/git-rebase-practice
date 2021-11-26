@@ -1,4 +1,5 @@
 alligator
+bee
 chimpanzee
 crocodile
 elephant
